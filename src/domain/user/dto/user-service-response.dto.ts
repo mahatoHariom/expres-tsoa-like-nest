@@ -1,4 +1,5 @@
 import { User } from '@prisma/client';
+import { Expose, plainToClass } from 'class-transformer';
 
 export class UserServiceResponseDto {
   id: number;
@@ -14,4 +15,24 @@ export class UserServiceResponseDto {
     this.createdAt = user.createdAt;
     this.updatedAt = user.updatedAt;
   }
+}
+
+export class UserEntity {
+  @Expose()
+  id: number;
+  @Expose()
+  name: string;
+
+  @Expose()
+  email: string;
+
+  password: string;
+  @Expose()
+  createdAt: Date;
+
+  @Expose()
+  updatedAt: Date;
+
+  @Expose()
+  deletedAt: Date | null;
 }

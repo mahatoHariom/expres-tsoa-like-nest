@@ -1,6 +1,7 @@
 import httpStatus from 'http-status';
 import { ValidateError } from 'tsoa';
-import { Exception } from '../exceptions/exception';
+import { Exception } from '../exceptions/Exception';
+
 
 export class ErrorResponsePayload {
   message: string;
@@ -13,7 +14,7 @@ export class ErrorResponsePayload {
     }
     // tsoa validation error
     else if (err instanceof ValidateError) {
-      this.message = '입력값이 유효하지 않습니다.';
+      this.message = 'The input values are invalid.';
     }
 
     // physical error

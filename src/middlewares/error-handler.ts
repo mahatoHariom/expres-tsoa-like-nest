@@ -1,15 +1,23 @@
 import { ErrorResponsePayload } from '../common/responses/error-response-payload';
-import { Exception } from '../common/exceptions/exception';
+import { Exception } from '../common/exceptions/Exception'
 import { ErrorRequestHandler, NextFunction } from 'express';
 import { ValidateError } from 'tsoa';
+import { Prisma } from '@prisma/client';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler: ErrorRequestHandler = (err: Error | Exception, req, res, next: NextFunction) => {
   console.log(err);
 
-  const statusCode =
-    err instanceof Exception ? err.getter().statusCode : err instanceof ValidateError ? err.status : 500;
-  const response = new ErrorResponsePayload(err);
+  let statusCode = 500;
+  let response = new ErrorResponsePayload(err);
+
+  if (err instanceof Exception) {
+    statusCode = err.getter().statusCode;
+  } else if (err instanceof ValidateError) {
+    statusCode = err.status;
+  } else if (err instanceof Prisma.PrismaClientValidationError) {
+    statusCode = 400;
+    response = new ErrorResponsePayload(new Error('Prisma Validation Error'));
+  }
 
   res.status(statusCode).send(response);
 };

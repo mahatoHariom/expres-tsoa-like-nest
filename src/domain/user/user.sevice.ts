@@ -1,25 +1,26 @@
 import { inject } from 'inversify';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { UserRepository } from './user.repository';
 import { provideSingleton } from '../../ioc/provide-singleton';
 import { createHashedPassword } from '../../utils/create-hashed-password';
-import { UserServiceResponseDto } from './dto/user-service-response.dto';
+import { UserEntity, UserServiceResponseDto } from './dto/user-service-response.dto';
 import { ConflictException } from '../../common/exceptions/conflict-exception';
 import { NotFoundUserException } from './exceptions/not-found-user-exception';
 import { BadRequestException } from '../../common/exceptions/bad-request-exception';
+import { plainToClass } from 'class-transformer';
 
 @provideSingleton(UserService)
 export class UserService {
   constructor(@inject(UserRepository) private readonly userRepository: UserRepository) {}
 
   async create(data: Prisma.UserCreateInput) {
-    const user = await this.getByEmail({ email: data.email, teamId: data.teamId }).catch((e: NotFoundUserException) => {
+    const user = await this.getByEmail({ email: data.email }).catch((e: NotFoundUserException) => {
       if (e instanceof NotFoundUserException) return null;
       throw e;
     });
 
     if (user) {
-      throw new ConflictException('이미 사용 중인 이메일입니다.');
+      throw new ConflictException('User with email already exist');
     }
 
     const hashedPassword = createHashedPassword(data.password);
@@ -27,12 +28,12 @@ export class UserService {
       ...data,
       password: hashedPassword,
     });
-
-    return new UserServiceResponseDto(newUser);
+    return newUser
+   
   }
 
-  async validate({ teamId, email, password }: { teamId: string; email: string; password: string }) {
-    const user = await this.userRepository.getByEmail({ email, teamId });
+  async validate({ email, password }: { email: string; password: string }) {
+    const user = await this.userRepository.getByEmail(email);
 
     if (!user) {
       throw new NotFoundUserException();
@@ -46,8 +47,8 @@ export class UserService {
     return new UserServiceResponseDto(user);
   }
 
-  async getByEmail({ email, teamId }: { email: string; teamId: string }) {
-    const user = await this.userRepository.getByEmail({ email, teamId });
+  async getByEmail({ email }: { email: string }) {
+    const user = await this.userRepository.getByEmail(email);
 
     if (!user) {
       throw new NotFoundUserException();
@@ -65,4 +66,6 @@ export class UserService {
 
     return new UserServiceResponseDto(user);
   }
+
+
 }

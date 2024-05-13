@@ -1,5 +1,5 @@
-import app from './app';
 
-app.listen(3000, () =>
-  console.log(`======================\n🚀 App listening on the port 3000\n======================`),
-);
+import app from './app';
+import { config } from './config/env';
+
+app.listen(config.port, () => console.log(`🚀🦅 App listening on the http://localhost:${config.port}`));

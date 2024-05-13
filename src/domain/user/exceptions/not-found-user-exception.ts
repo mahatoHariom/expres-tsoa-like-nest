@@ -2,6 +2,6 @@ import { NotFoundException } from '../../../common/exceptions/not-found-exceptio
 
 export class NotFoundUserException extends NotFoundException {
   constructor() {
-    super('가입되지 않은 이메일입니다.');
+    super('This email is not registered.');
   }
 }

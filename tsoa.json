@@ -6,10 +6,13 @@
   "compilerOptions": { "strict": true },
   "spec": {
     "specVersion": 3,
-    "title": "sp-slidtodo",
-    "summary": "sp-slidtodo api spec",
+    "name": "Real Estate Ecommerce",
+    "description": "One place for all things",
     "outputDirectory": "./src",
-    "servers": [{ "url": "http://localhost:3000", "description": "localhost" }],
+    "servers": [{ "url": "http://localhost:9000", "description": "localhost" }],
+    "host":"localhost:9000",
+    "schemes":["http"],
+
     "securityDefinitions": {
       "bearerAuth": {
         "type": "http",

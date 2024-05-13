@@ -12,13 +12,10 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
-  teamId  String  @db.VarChar(255)
-  email     String   @db.VarChar(255)
-  password  String   @db.VarChar(255)
-  name  String   @db.VarChar(255)
+  email     String   
+  password  String  
+  name  String   
   createdAt DateTime @default(dbgenerated("NOW()"))
   updatedAt DateTime @updatedAt
   deletedAt DateTime? 
-
-  @@index([email, teamId], name: "user_email_teamId")
 }

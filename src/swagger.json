@@ -6,16 +6,19 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"UserServiceResponseDto": {
+			"UserEntity": {
 				"properties": {
 					"id": {
 						"type": "number",
 						"format": "double"
 					},
+					"name": {
+						"type": "string"
+					},
 					"email": {
 						"type": "string"
 					},
-					"name": {
+					"password": {
 						"type": "string"
 					},
 					"createdAt": {
@@ -25,14 +28,41 @@
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
 					}
 				},
 				"required": [
 					"id",
-					"email",
 					"name",
+					"email",
+					"password",
 					"createdAt",
-					"updatedAt"
+					"updatedAt",
+					"deletedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateUserDto": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"email",
+					"password"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -49,23 +79,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"LoginBodyDto": {
-				"properties": {
-					"email": {
-						"type": "string"
-					},
-					"password": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"email",
-					"password"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UserCreateRequstDto": {
+			"UserCreateRequestDto": {
 				"properties": {
 					"email": {
 						"type": "string"
@@ -95,166 +109,43 @@
 		}
 	},
 	"info": {
-		"title": "server",
+		"title": "Real Estate Ecommerce",
 		"version": "1.0.0",
-		"description": "codeit-slidtodo",
+		"description": "One place for all things",
 		"contact": {}
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/{teamId}/auth/login": {
+		"/auth/register": {
 			"post": {
-				"operationId": "Login",
+				"operationId": "CreateUser",
 				"responses": {
-					"201": {
-						"description": "Created",
+					"200": {
+						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"user": {
-											"$ref": "#/components/schemas/UserServiceResponseDto"
-										},
-										"refreshToken": {
-											"type": "string"
-										},
-										"accessToken": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"user",
-										"refreshToken",
-										"accessToken"
-									],
-									"type": "object"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "BadRequest",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponsePayload"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "이메일 형식으로 작성해 주세요."
-										}
-									},
-									"Example 2": {
-										"value": {
-											"message": "이메일을 입력해 주세요."
-										}
-									},
-									"Example 3": {
-										"value": {
-											"message": "비밀번호를 입력해 주세요."
-										}
-									},
-									"Example 4": {
-										"value": {
-											"message": "비밀번호가 올바르지 않습니다."
-										}
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "NotFoundException",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponsePayload"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "가입되지 않은 이메일입니다."
-										}
-									}
+									"$ref": "#/components/schemas/UserEntity"
 								}
 							}
 						}
 					}
 				},
-				"summary": "로그인",
 				"tags": [
 					"Auth"
 				],
 				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "teamId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
+				"parameters": [],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/LoginBodyDto"
+								"$ref": "#/components/schemas/CreateUserDto"
 							}
 						}
 					}
 				}
-			}
-		},
-		"/{teamId}/auth/tokens": {
-			"post": {
-				"operationId": "Refresh",
-				"responses": {
-					"201": {
-						"description": "Created",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"refreshToken": {
-											"type": "string"
-										},
-										"accessToken": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"refreshToken",
-										"accessToken"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"summary": "토큰 재발급",
-				"tags": [
-					"Auth"
-				],
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "teamId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
 			}
 		},
 		"/{teamId}/user": {
@@ -266,7 +157,44 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UserServiceResponseDto"
+									"properties": {
+										"deletedAt": {
+											"type": "string",
+											"format": "date-time",
+											"nullable": true
+										},
+										"updatedAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"createdAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"name": {
+											"type": "string"
+										},
+										"password": {
+											"type": "string"
+										},
+										"email": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"deletedAt",
+										"updatedAt",
+										"createdAt",
+										"name",
+										"password",
+										"email",
+										"id"
+									],
+									"type": "object"
 								}
 							}
 						}
@@ -277,28 +205,6 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ErrorResponsePayload"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "이메일 형식으로 작성해 주세요."
-										}
-									},
-									"Example 2": {
-										"value": {
-											"message": "이메일을 입력해 주세요."
-										}
-									},
-									"Example 3": {
-										"value": {
-											"message": "이름을 입력해 주세요."
-										}
-									},
-									"Example 4": {
-										"value": {
-											"message": "비밀번호가 8자 이상이 되도록 해 주세요."
-										}
-									}
 								}
 							}
 						}
@@ -309,13 +215,6 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ErrorResponsePayload"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "이미 사용 중인 이메일입니다."
-										}
-									}
 								}
 							}
 						}
@@ -341,7 +240,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UserCreateRequstDto"
+								"$ref": "#/components/schemas/UserCreateRequestDto"
 							}
 						}
 					}
@@ -351,7 +250,7 @@
 	},
 	"servers": [
 		{
-			"url": "/"
+			"url": "http://localhost:9000/"
 		}
 	]
 }

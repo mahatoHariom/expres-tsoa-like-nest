@@ -1,14 +1,14 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 
-export class UserCreateRequstDto {
-  @IsEmail({}, { message: '이메일 형식으로 작성해 주세요.' })
-  @IsNotEmpty({ message: '이메일을 입력해 주세요.' })
+export class UserCreateRequestDto {
+  @IsEmail({},{ message: 'Please enter a valid email format.' })
+  @IsNotEmpty({ message: 'Please enter your email.' })
   email: string;
 
-  @IsNotEmpty({ message: '이름을 입력해 주세요.' })
+  @IsNotEmpty({ message: 'Please enter your name.' })
   name: string;
 
-  @MinLength(8, { message: '비밀번호가 8자 이상이 되도록 해 주세요.' })
-  @IsNotEmpty({ message: '비밀번호가 8자 이상이 되도록 해 주세요.' })
+  @MinLength(8, { message: 'Please make the password at least 8 characters long.' })
+  @IsNotEmpty({ message: 'Please enter your password.' })
   password: string;
 }

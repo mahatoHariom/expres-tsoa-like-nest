@@ -12,11 +12,11 @@ export class UserRepository {
     return this.prisma.user.create({ data });
   }
 
-  async getByEmail({ email, teamId }: { email: string; teamId: string }) {
-    return await this.prisma.user.findFirst({ where: { email, teamId, deletedAt: null } });
+  async getByEmail(email: string ) {
+    return await this.prisma.user.findFirst({ where: { email, deletedAt: null } });
   }
 
-  async getById({ id, teamId }: { id: number; teamId: string }) {
-    return await this.prisma.user.findFirst({ where: { id, teamId, deletedAt: null } });
+  async getById({ id }: { id: number; teamId: string }) {
+    return await this.prisma.user.findFirst({ where: { id, deletedAt: null } });
   }
 }
